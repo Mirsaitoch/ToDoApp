@@ -14,7 +14,7 @@ final class TodoItemTests: XCTestCase {
     func testTodoItemInitialization() {
         
         let todo = TodoItem(
-            id: nil,
+            id: UUID(),
             text: "Test",
             importance: .important,
             isCompleted: false,
@@ -37,25 +37,26 @@ final class TodoItemTests: XCTestCase {
     func testFileCacheAddTodoItem() {
         let fileCache = FileCache()
         
-        let todo = TodoItem(id: "1", text: "Test Add", importance: .usual, isCompleted: false, createDate: Date())
+        let todo = TodoItem(id: UUID(), text: "Test Add", importance: .usual, isCompleted: false, createDate: Date())
         
         fileCache.addTodoItem(todo)
         XCTAssertEqual(fileCache.toDoItems.count, 1)
-        XCTAssertEqual(fileCache.toDoItems.first?.text, "Test Add")
+        XCTAssertEqual(fileCache.toDoItems.first?.value.text, "Test Add")
     }
     
     //Тест на добавление двух TodoItem с одиннаковым id в коллекцию
     func testFileCacheAddTwoTodoItems() {
         let fileCache = FileCache()
+        let testId = UUID()
         let todo1 = TodoItem(
-            id: "1",
+            id: testId,
             text: "Test Add 1",
             importance: .usual,
             isCompleted: false,
             createDate: Date()
         )
         let todo2 = TodoItem(
-            id: "1",
+            id: testId,
             text: "Test Add 2",
             importance: .usual,
             isCompleted: false,
@@ -71,15 +72,18 @@ final class TodoItemTests: XCTestCase {
     //Тест на удаление TodoItem из коллекции
     func testFileCacheDeleteTodoItem() {
         let fileCache = FileCache()
+        let id1 = UUID()
+        let id2 = UUID()
+
         let todo1 = TodoItem(
-            id: "1",
+            id: id1,
             text: "Test Delete 1",
             importance: .usual,
             isCompleted: false,
             createDate: Date()
         )
         let todo2 = TodoItem(
-            id: "2",
+            id: id2,
             text: "Test Delete 2",
             importance: .usual,
             isCompleted: false,
@@ -87,9 +91,9 @@ final class TodoItemTests: XCTestCase {
         )
         fileCache.addTodoItem(todo1)
         fileCache.addTodoItem(todo2)
-        fileCache.deleteTodoItem("1")
+        fileCache.deleteTodoItem(id1)
         XCTAssertEqual(fileCache.toDoItems.count, 1)
-        XCTAssertEqual(fileCache.toDoItems.first?.id, "2")
+        XCTAssertEqual(fileCache.toDoItems.first?.value.id, id2)
     }
     
     //Тест на сохранение и загрузку файлов
@@ -97,7 +101,6 @@ final class TodoItemTests: XCTestCase {
         let fileCache = FileCache()
         
         let todo = TodoItem(
-            id: "1",
             text: "Test Save Load",
             importance: .important,
             isCompleted: false,
@@ -112,7 +115,7 @@ final class TodoItemTests: XCTestCase {
         newFileCache.loadTodoItems(from: fileName)
         
         XCTAssertEqual(newFileCache.toDoItems.count, 1)
-        XCTAssertEqual(newFileCache.toDoItems.first?.text, "Test Save Load")
+        XCTAssertEqual(newFileCache.toDoItems.first?.value.text, "Test Save Load")
         
     }
     
@@ -120,10 +123,11 @@ final class TodoItemTests: XCTestCase {
     func testTodoItemToCSV() {
         let createDate = Date()
         let changeDate = Date()
-        let todo = TodoItem(id: "123", text: "Task with, comma", importance: .important, deadline: nil, isCompleted: false, createDate: createDate, changeDate: changeDate)
+        let id = UUID()
+        let todo = TodoItem(id: id, text: "Task with, comma", importance: .important, deadline: nil, isCompleted: false, createDate: createDate, changeDate: changeDate)
         let csv = todo.toCSV()
         
-        let expectedCSV = "123,\"Task with, comma\",important,,false,\(createDate.description),\(changeDate.description)"
+        let expectedCSV = "\(id),\"Task with, comma\",important,,false,\(createDate.description),\(changeDate.description)"
         XCTAssertEqual(csv, expectedCSV)
     }
     
@@ -131,11 +135,12 @@ final class TodoItemTests: XCTestCase {
     func testTodoItemFromCSV() {
         let createDate = Date()
         let changeDate = Date()
+        let testId = UUID()
         
-        let csvString = "123,\"Task with, comma\",important,,false,\(createDate.description),\(changeDate.description)"
+        let csvString = "\(testId),\"Task with, comma\",important,,false,\(createDate.description),\(changeDate.description)"
         
         if let todo = TodoItem.fromCSV(csvString) {
-            XCTAssertEqual(todo.id, "123")
+            XCTAssertEqual(testId, testId)
             XCTAssertEqual(todo.text, "Task with, comma")
             XCTAssertEqual(todo.importance, .important)
             XCTAssertFalse(todo.isCompleted)
@@ -167,18 +172,21 @@ final class TodoItemTests: XCTestCase {
         let createDateString = createDate.description
         let changeDateString = changeDate.description
         let deadlineDateString = deadlineDate.description
+        let testId1 = UUID()
+        let testId2 = UUID()
+        let testId3 = UUID()
 
         let csvString = """
-                123,"Task with, comma",important,,false,\(createDateString),\(changeDateString)
-                124,"Task",usual,,true,\(createDateString),
-                125,"👽",unimportant,\(deadlineDateString),false,\(createDateString),
+                \(testId1),"Task with, comma",important,,false,\(createDateString),\(changeDateString)
+                \(testId2),"Task",usual,,true,\(createDateString),
+                \(testId3),"👽",unimportant,\(deadlineDateString),false,\(createDateString),
                 """
         
-        let todos = TodoItem.parseCSV(csv: csvString)
+        let todos = TodoItem.parse(csv: csvString)
         XCTAssertEqual(todos.count, 3)
         
         let todo1 = todos[0]
-        XCTAssertEqual(todo1.id, "123")
+        XCTAssertEqual(todo1.id, testId1)
         XCTAssertEqual(todo1.text, "Task with, comma")
         XCTAssertEqual(todo1.importance, .important)
         XCTAssertFalse(todo1.isCompleted)
@@ -186,7 +194,7 @@ final class TodoItemTests: XCTestCase {
         XCTAssertEqual(todo1.changeDate?.description, changeDate.description)
         
         let todo2 = todos[1]
-        XCTAssertEqual(todo2.id, "124")
+        XCTAssertEqual(todo2.id, testId2)
         XCTAssertEqual(todo2.text, "Task")
         XCTAssertEqual(todo2.importance, .usual)
         XCTAssertTrue(todo2.isCompleted)
@@ -194,7 +202,7 @@ final class TodoItemTests: XCTestCase {
         XCTAssertNil(todo2.changeDate)
         
         let todo3 = todos[2]
-        XCTAssertEqual(todo3.id, "125")
+        XCTAssertEqual(todo3.id, testId3)
         XCTAssertEqual(todo3.text, "👽")
         XCTAssertEqual(todo3.importance, .unimportant)
         XCTAssertEqual(todo3.deadline?.description, deadlineDate.description)

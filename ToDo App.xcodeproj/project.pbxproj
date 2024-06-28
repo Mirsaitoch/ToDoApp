@@ -8,13 +8,26 @@
 
 /* Begin PBXBuildFile section */
 		3B4B26062C1C9764003246D2 /* ToDo_AppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B26052C1C9764003246D2 /* ToDo_AppApp.swift */; };
-		3B4B26082C1C9764003246D2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B26072C1C9764003246D2 /* ContentView.swift */; };
+		3B4B26082C1C9764003246D2 /* TodoItemList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B26072C1C9764003246D2 /* TodoItemList.swift */; };
 		3B4B260A2C1C9766003246D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B4B26092C1C9766003246D2 /* Assets.xcassets */; };
 		3B4B260D2C1C9766003246D2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B4B260C2C1C9766003246D2 /* Preview Assets.xcassets */; };
 		3B4B26152C1C9781003246D2 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B26142C1C9781003246D2 /* TodoItem.swift */; };
 		3B4B26172C1C9AAA003246D2 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B26162C1C9AAA003246D2 /* FileCache.swift */; };
-		3B4B26192C1CDE71003246D2 /* extension-ToDoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B26182C1CDE71003246D2 /* extension-ToDoItem.swift */; };
+		3B612D2B2C2AD1970038E696 /* ToDoItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B612D2A2C2AD1970038E696 /* ToDoItemDetailView.swift */; };
+		3B612D2D2C2AD2B90038E696 /* ToDoItemDelailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B612D2C2C2AD2B90038E696 /* ToDoItemDelailViewModel.swift */; };
+		3B612D302C2B1A8E0038E696 /* TodoItemListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B612D2F2C2B1A8E0038E696 /* TodoItemListViewModel.swift */; };
+		3B612D322C2B1B700038E696 /* DateConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B612D312C2B1B700038E696 /* DateConverter.swift */; };
+		3B612D342C2C48B30038E696 /* RedCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B612D332C2C48B30038E696 /* RedCircle.swift */; };
+		3B612D362C2C6D4F0038E696 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B612D352C2C6D4F0038E696 /* Constants.swift */; };
 		3BBD3E982C257ECF00CFE8F4 /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBD3E892C257E7E00CFE8F4 /* TodoItemTests.swift */; };
+		3BEBB8122C2D979800AC4C29 /* ToDoItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEBB8112C2D979800AC4C29 /* ToDoItemCell.swift */; };
+		3BEBB8142C2D985900AC4C29 /* PlusButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEBB8132C2D985900AC4C29 /* PlusButton.swift */; };
+		3BEBB8162C2DA07900AC4C29 /* CompleteCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEBB8152C2DA07900AC4C29 /* CompleteCircle.swift */; };
+		3BEBB8182C2DA34D00AC4C29 /* DefaultCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEBB8172C2DA34D00AC4C29 /* DefaultCircle.swift */; };
+		3BEBB81A2C2DE38900AC4C29 /* ToDoItem+JSONparser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEBB8192C2DE38900AC4C29 /* ToDoItem+JSONparser.swift */; };
+		3BEBB81C2C2DE40B00AC4C29 /* ToDoItem+CSVparser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEBB81B2C2DE40B00AC4C29 /* ToDoItem+CSVparser.swift */; };
+		3BEBB86B2C2EE4EA00AC4C29 /* ColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEBB86A2C2EE4EA00AC4C29 /* ColorPickerView.swift */; };
+		3BEBB86D2C2EF66900AC4C29 /* Color+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEBB86C2C2EF66900AC4C29 /* Color+hex.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,14 +43,27 @@
 /* Begin PBXFileReference section */
 		3B4B26022C1C9764003246D2 /* ToDo App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ToDo App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4B26052C1C9764003246D2 /* ToDo_AppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDo_AppApp.swift; sourceTree = "<group>"; };
-		3B4B26072C1C9764003246D2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3B4B26072C1C9764003246D2 /* TodoItemList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemList.swift; sourceTree = "<group>"; };
 		3B4B26092C1C9766003246D2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3B4B260C2C1C9766003246D2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3B4B26142C1C9781003246D2 /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		3B4B26162C1C9AAA003246D2 /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
-		3B4B26182C1CDE71003246D2 /* extension-ToDoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "extension-ToDoItem.swift"; sourceTree = "<group>"; };
+		3B612D2A2C2AD1970038E696 /* ToDoItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoItemDetailView.swift; sourceTree = "<group>"; };
+		3B612D2C2C2AD2B90038E696 /* ToDoItemDelailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoItemDelailViewModel.swift; sourceTree = "<group>"; };
+		3B612D2F2C2B1A8E0038E696 /* TodoItemListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemListViewModel.swift; sourceTree = "<group>"; };
+		3B612D312C2B1B700038E696 /* DateConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateConverter.swift; sourceTree = "<group>"; };
+		3B612D332C2C48B30038E696 /* RedCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedCircle.swift; sourceTree = "<group>"; };
+		3B612D352C2C6D4F0038E696 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3BBD3E892C257E7E00CFE8F4 /* TodoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemTests.swift; sourceTree = "<group>"; };
 		3BBD3E8F2C257EC700CFE8F4 /* ToDo AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ToDo AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BEBB8112C2D979800AC4C29 /* ToDoItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoItemCell.swift; sourceTree = "<group>"; };
+		3BEBB8132C2D985900AC4C29 /* PlusButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusButton.swift; sourceTree = "<group>"; };
+		3BEBB8152C2DA07900AC4C29 /* CompleteCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCircle.swift; sourceTree = "<group>"; };
+		3BEBB8172C2DA34D00AC4C29 /* DefaultCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCircle.swift; sourceTree = "<group>"; };
+		3BEBB8192C2DE38900AC4C29 /* ToDoItem+JSONparser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ToDoItem+JSONparser.swift"; sourceTree = "<group>"; };
+		3BEBB81B2C2DE40B00AC4C29 /* ToDoItem+CSVparser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ToDoItem+CSVparser.swift"; sourceTree = "<group>"; };
+		3BEBB86A2C2EE4EA00AC4C29 /* ColorPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerView.swift; sourceTree = "<group>"; };
+		3BEBB86C2C2EF66900AC4C29 /* Color+hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+hex.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +84,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B21CE642C2EF92200EC24AD /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				3BEBB86A2C2EE4EA00AC4C29 /* ColorPickerView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		3B4B25F92C1C9764003246D2 = {
 			isa = PBXGroup;
 			children = (
@@ -80,10 +114,11 @@
 			isa = PBXGroup;
 			children = (
 				3BBD3E842C24CBE800CFE8F4 /* App */,
-				3BBD3E852C24CBFD00CFE8F4 /* Models */,
-				3BBD3E862C24CC0F00CFE8F4 /* Views */,
-				3BEDCCFA2C259A8F006129A7 /* ViewModels */,
+				3BBD3E862C24CC0F00CFE8F4 /* TodoItemList */,
+				3B612D2E2C2AD2C20038E696 /* ToDoItemDetail */,
+				3BEDCCFA2C259A8F006129A7 /* Services */,
 				3BBD3E832C24CBD300CFE8F4 /* Extensions */,
+				3BEBB80D2C2D96F800AC4C29 /* Helpers */,
 				3B4B26092C1C9766003246D2 /* Assets.xcassets */,
 				3B4B260B2C1C9766003246D2 /* Preview Content */,
 			);
@@ -98,10 +133,21 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		3B612D2E2C2AD2C20038E696 /* ToDoItemDetail */ = {
+			isa = PBXGroup;
+			children = (
+				3BEBB80E2C2D970A00AC4C29 /* Views */,
+				3BEBB80F2C2D971000AC4C29 /* ViewModels */,
+			);
+			path = ToDoItemDetail;
+			sourceTree = "<group>";
+		};
 		3BBD3E832C24CBD300CFE8F4 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				3B4B26182C1CDE71003246D2 /* extension-ToDoItem.swift */,
+				3BEBB8192C2DE38900AC4C29 /* ToDoItem+JSONparser.swift */,
+				3BEBB81B2C2DE40B00AC4C29 /* ToDoItem+CSVparser.swift */,
+				3BEBB86C2C2EF66900AC4C29 /* Color+hex.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -114,20 +160,14 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		3BBD3E852C24CBFD00CFE8F4 /* Models */ = {
+		3BBD3E862C24CC0F00CFE8F4 /* TodoItemList */ = {
 			isa = PBXGroup;
 			children = (
-				3B4B26142C1C9781003246D2 /* TodoItem.swift */,
+				3BEBB8102C2D972A00AC4C29 /* Model */,
+				3BEBB80A2C2D96C500AC4C29 /* View */,
+				3BEBB80C2C2D96DF00AC4C29 /* ViewModels */,
 			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		3BBD3E862C24CC0F00CFE8F4 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				3B4B26072C1C9764003246D2 /* ContentView.swift */,
-			);
-			path = Views;
+			path = TodoItemList;
 			sourceTree = "<group>";
 		};
 		3BBD3E902C257EC700CFE8F4 /* ToDo AppTests */ = {
@@ -138,12 +178,83 @@
 			path = "ToDo AppTests";
 			sourceTree = "<group>";
 		};
-		3BEDCCFA2C259A8F006129A7 /* ViewModels */ = {
+		3BEBB80A2C2D96C500AC4C29 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				3B4B26162C1C9AAA003246D2 /* FileCache.swift */,
+				3B4B26072C1C9764003246D2 /* TodoItemList.swift */,
+				3BEBB80B2C2D96D000AC4C29 /* Components */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		3BEBB80B2C2D96D000AC4C29 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				3BEBB8112C2D979800AC4C29 /* ToDoItemCell.swift */,
+				3BEBB8132C2D985900AC4C29 /* PlusButton.swift */,
+				3BEBB8682C2ED6DA00AC4C29 /* Circles */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		3BEBB80C2C2D96DF00AC4C29 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				3B612D2F2C2B1A8E0038E696 /* TodoItemListViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		3BEBB80D2C2D96F800AC4C29 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				3B612D352C2C6D4F0038E696 /* Constants.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		3BEBB80E2C2D970A00AC4C29 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3B612D2A2C2AD1970038E696 /* ToDoItemDetailView.swift */,
+				3B21CE642C2EF92200EC24AD /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3BEBB80F2C2D971000AC4C29 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				3B612D2C2C2AD2B90038E696 /* ToDoItemDelailViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		3BEBB8102C2D972A00AC4C29 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3B4B26142C1C9781003246D2 /* TodoItem.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		3BEBB8682C2ED6DA00AC4C29 /* Circles */ = {
+			isa = PBXGroup;
+			children = (
+				3BEBB8152C2DA07900AC4C29 /* CompleteCircle.swift */,
+				3BEBB8172C2DA34D00AC4C29 /* DefaultCircle.swift */,
+				3B612D332C2C48B30038E696 /* RedCircle.swift */,
+			);
+			path = Circles;
+			sourceTree = "<group>";
+		};
+		3BEDCCFA2C259A8F006129A7 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				3B612D312C2B1B700038E696 /* DateConverter.swift */,
+				3B4B26162C1C9AAA003246D2 /* FileCache.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -210,6 +321,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 3B4B25F92C1C9764003246D2;
 			productRefGroup = 3B4B26032C1C9764003246D2 /* Products */;
@@ -246,11 +358,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B4B26082C1C9764003246D2 /* ContentView.swift in Sources */,
-				3B4B26192C1CDE71003246D2 /* extension-ToDoItem.swift in Sources */,
+				3BEBB8162C2DA07900AC4C29 /* CompleteCircle.swift in Sources */,
+				3B4B26082C1C9764003246D2 /* TodoItemList.swift in Sources */,
+				3B612D362C2C6D4F0038E696 /* Constants.swift in Sources */,
+				3BEBB86B2C2EE4EA00AC4C29 /* ColorPickerView.swift in Sources */,
+				3B612D342C2C48B30038E696 /* RedCircle.swift in Sources */,
+				3B612D322C2B1B700038E696 /* DateConverter.swift in Sources */,
 				3B4B26152C1C9781003246D2 /* TodoItem.swift in Sources */,
+				3BEBB8182C2DA34D00AC4C29 /* DefaultCircle.swift in Sources */,
+				3BEBB8122C2D979800AC4C29 /* ToDoItemCell.swift in Sources */,
+				3B612D302C2B1A8E0038E696 /* TodoItemListViewModel.swift in Sources */,
 				3B4B26172C1C9AAA003246D2 /* FileCache.swift in Sources */,
+				3BEBB81A2C2DE38900AC4C29 /* ToDoItem+JSONparser.swift in Sources */,
+				3B612D2B2C2AD1970038E696 /* ToDoItemDetailView.swift in Sources */,
+				3BEBB81C2C2DE40B00AC4C29 /* ToDoItem+CSVparser.swift in Sources */,
 				3B4B26062C1C9764003246D2 /* ToDo_AppApp.swift in Sources */,
+				3BEBB86D2C2EF66900AC4C29 /* Color+hex.swift in Sources */,
+				3B612D2D2C2AD2B90038E696 /* ToDoItemDelailViewModel.swift in Sources */,
+				3BEBB8142C2D985900AC4C29 /* PlusButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,8 +531,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -415,6 +540,10 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mirsait.sabirzyanov.ToDo-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -435,8 +564,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -444,6 +573,10 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mirsait.sabirzyanov.ToDo-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
