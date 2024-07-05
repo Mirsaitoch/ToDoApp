@@ -22,6 +22,13 @@ extension TodoItem {
             data["importance"] = importance.rawValue
         }
         
+        if case let .standard(standardCategory) = category, standardCategory != .other {
+            data["category"] = standardCategory.rawValue
+        } else if case let .custom(customCategory) = category {
+            data["category"] = customCategory.id.uuidString
+        }
+
+        
         if let deadline = deadline {
             data["deadline"] = deadline.timeIntervalSince1970
         }
@@ -52,6 +59,9 @@ extension TodoItem {
         let importanceRawValue = json["importance"] as? String
         let importance = Priority(rawValue: importanceRawValue ?? "usual") ?? .usual
         
+        let categoryRawValue = json["category"] as? String
+        let category = ItemCategory(rawValue: categoryRawValue ?? "other") ?? .standard(.other)
+        
         var deadline: Date? = nil
         if let deadlineTimeInterval = json["deadline"] as? TimeInterval {
             deadline = Date(timeIntervalSince1970: deadlineTimeInterval)
@@ -64,6 +74,6 @@ extension TodoItem {
         
         let color = json["color"] as? String ?? "#FFFFFF"
         
-        return TodoItem(id: id, text: text, importance: importance, deadline: deadline, isCompleted: isCompleted, createDate: createDate, changeDate: changeDate, color: color)
+        return TodoItem(id: id, text: text, importance: importance, category: category, deadline: deadline, isCompleted: isCompleted, createDate: createDate, changeDate: changeDate, color: color)
     }
 }

@@ -12,7 +12,6 @@ struct ToDoItemDetailView: View {
     @StateObject var viewModel: ViewModel
     @FocusState private var isFocused: Bool
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var fileCache: FileCache
     
     init(itemID: UUID) {
         self.itemID = itemID
@@ -34,17 +33,13 @@ struct ToDoItemDetailView: View {
                         }
                         ToolbarItem(placement: .topBarTrailing) {
                             Button("Сохранить") {
-                                DispatchQueue.main.async {
-                                    viewModel.save()
-                                }
+                                viewModel.save()
                                 dismiss()
                             }.disabled(viewModel.text.isEmpty)
                         }
                     }
                     .onAppear {
-                        DispatchQueue.global().async {
-                            self.viewModel.setup(self.fileCache)
-                        }
+                        self.viewModel.setup()
                         if let colorHex = viewModel.item?.color {
                             viewModel.selectedColor = Color(hex: colorHex)
                         }
@@ -63,19 +58,15 @@ struct ToDoItemDetailView: View {
                         }
                         ToolbarItem(placement: .topBarTrailing) {
                             Button("Сохранить") {
-                                DispatchQueue.main.async {
-                                    viewModel.save()
-                                    dismiss()
-                                }
+                                viewModel.save()
+                                dismiss()
                             }.disabled(viewModel.text.isEmpty)
                         }
                     }
                     .onAppear {
-                        DispatchQueue.main.async {
-                            self.viewModel.setup(self.fileCache)
-                            if let colorHex = viewModel.item?.color {
-                                viewModel.selectedColor = Color(hex: colorHex)
-                            }
+                        self.viewModel.setup()
+                        if let colorHex = viewModel.item?.color {
+                            viewModel.selectedColor = Color(hex: colorHex)
                         }
                     }
             }
@@ -95,6 +86,7 @@ struct ToDoItemDetailView: View {
                 
                 Section {
                     importancePicker
+                    categoriesPicker
                     deadlineToggle
                     if viewModel.isDeadline {
                         calendarPicker
@@ -149,6 +141,7 @@ struct ToDoItemDetailView: View {
                 Form {
                     Section {
                         importancePicker
+                        categoriesPicker
                         deadlineToggle
                         if viewModel.isDeadline {
                             calendarPicker
@@ -243,6 +236,21 @@ struct ToDoItemDetailView: View {
         }
     }
     
+    var categoriesPicker: some View {
+        Picker("Категория", selection: $viewModel.category) {
+            ForEach(viewModel.allCategories) { category in
+                HStack {
+                    Image(systemName: "circle.fill")
+                        .symbolRenderingMode(.palette)
+                        .foregroundColor(category.color)
+                    Text(category.name)
+                }
+                .tag(category)
+            }
+        }
+        .pickerStyle(.menu)
+    }
+    
     var deadlineToggle: some View {
         Toggle(isOn: $viewModel.isDeadline.animation()) {
             VStack(alignment: .leading, spacing: 5) {
@@ -274,9 +282,7 @@ struct ToDoItemDetailView: View {
     
     var deleteButton: some View {
         Button(role: .destructive){
-            DispatchQueue.global().async {
-                viewModel.delete()
-            }
+            viewModel.delete()
             dismiss()
         } label: {
             HStack {

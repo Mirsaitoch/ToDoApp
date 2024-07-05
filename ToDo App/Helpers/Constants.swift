@@ -9,5 +9,5 @@ import Foundation
 
 enum Constants: String {
     case fileName = "Items.json"
-    case whiteHes = "#FFFFFF"
+    case whiteHex = "#FFFFFF"
 }
