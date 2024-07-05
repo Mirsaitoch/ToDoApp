@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ToDoItemCell: View {
     
-    @EnvironmentObject var fileCache: FileCache
+    let fileCache = FileCache.shared
     @State var todoId: UUID
     var dateConverter = DateConverter()
     var action: () -> ()
@@ -91,10 +91,7 @@ struct ToDoItemCell: View {
                     }
                 }
                 .onTapGesture {
-                    DispatchQueue.main.async {
-                        fileCache.updateTodoItem(id: todo.id, isCompleted: !todo.isCompleted, to: Constants.fileName.rawValue)
-                        
-                    }
+                    fileCache.updateTodoItem(id: todo.id, isCompleted: !todo.isCompleted, to: Constants.fileName.rawValue)
                 }
             }
         }

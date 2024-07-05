@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct TodoItemList: View {
-    @StateObject private var fileCache = FileCache()
     @StateObject var viewModel = ViewModel()
     
     var body: some View {
         NavigationStack {
             ZStack {
                 VStack {
-                    List {
+                    List() {
                         Section(header: header) {
                             ForEach(Array(viewModel.filteredItems), id: \.id) { item in
                                 ToDoItemCell(todoId: item.id) {
@@ -64,27 +63,37 @@ struct TodoItemList: View {
                         viewModel.showDetailView.toggle()
                     }
             }
+            .toolbar {
+                ToolbarItem {
+                    NavigationLink() {
+                        CalendarView()
+                    } label: {
+                        Image(systemName: "calendar")
+                    }
+                }
+                ToolbarItem {
+                    NavigationLink() {
+                        AddCategoryView()
+                    } label: {
+                        Image(systemName: "gear")
+                    }
+                }
+            }
             .navigationTitle("Мои дела")
         }
+        .scrollIndicators(.hidden)
         .scrollContentBackground(.hidden)
         .background(Color.backPrimary)
         .sheet(isPresented: $viewModel.showDetailView, onDismiss: {
             viewModel.selectedItem = nil
-            DispatchQueue.global(qos: .background).async {
-                viewModel.loadItems()
-            }
+            viewModel.loadItems()
         }) {
             ToDoItemDetailView(itemID: viewModel.selectedItem?.id ?? UUID())
-                .environmentObject(fileCache)
         }
         .onAppear {
-            self.viewModel.setup(self.fileCache)
-            
-            DispatchQueue.global(qos: .background).async {
-                viewModel.loadItems()
-            }
+            self.viewModel.setup()
+            viewModel.loadItems()
         }
-        .environmentObject(fileCache)
     }
     
     var header: some View {
