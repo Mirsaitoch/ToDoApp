@@ -12,12 +12,10 @@ import SwiftUI
 
 class TodoListViewController: UIViewController {
     
-    
     private lazy var builder = {
         return ViewBuilder(viewController: self)
     }()
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         

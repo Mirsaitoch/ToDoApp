@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-class DateConverter {
+final class DateConverter {
     
     func convertDateToStringDayMonth(date: Date?) -> String? {
         let dateFormatter = DateFormatter()

@@ -6,10 +6,9 @@
 //
 
 import Foundation
+import FileCachePackage
 
-import Foundation
-
-extension TodoItem {
+extension TodoItem: FileCachePackage.CachableJson {
     var json: Any {
         var data: [String: Any] = [
             "id": id.uuidString,
@@ -28,7 +27,6 @@ extension TodoItem {
             data["category"] = customCategory.id.uuidString
         }
 
-        
         if let deadline = deadline {
             data["deadline"] = deadline.timeIntervalSince1970
         }
@@ -45,6 +43,7 @@ extension TodoItem {
     }
     
     static func parse(json: Any) -> TodoItem? {
+        
         guard let data = try? JSONSerialization.data(withJSONObject: json, options: []),
               let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
               let id = (json["id"] as? String).flatMap({ UUID(uuidString: $0) }),
@@ -62,12 +61,12 @@ extension TodoItem {
         let categoryRawValue = json["category"] as? String
         let category = ItemCategory(rawValue: categoryRawValue ?? "other") ?? .standard(.other)
         
-        var deadline: Date? = nil
+        var deadline: Date?
         if let deadlineTimeInterval = json["deadline"] as? TimeInterval {
             deadline = Date(timeIntervalSince1970: deadlineTimeInterval)
         }
         
-        var changeDate: Date? = nil
+        var changeDate: Date?
         if let changeDateTimeInterval = json["changeDate"] as? TimeInterval {
             changeDate = Date(timeIntervalSince1970: changeDateTimeInterval)
         }

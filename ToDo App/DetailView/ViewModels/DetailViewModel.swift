@@ -5,26 +5,26 @@
 //  Created by Мирсаит Сабирзянов on 25.06.2024.
 //
 
-
-
+import CocoaLumberjackSwift
 import Foundation
 import SwiftUI
 
-extension ToDoItemDetailView {
-    class ViewModel: ObservableObject {
+extension DetailView {
+    @MainActor
+    final class ViewModel: ObservableObject, @unchecked Sendable {
         
         var id: UUID
         var fileCache = FileCache.shared
         var item: TodoItem?
         var dateConverter = DateConverter()
         @Published var text = ""
-        @Published var emptyText = "Что надо сделать?"
         @Published var importance = Priority.usual
         @Published var category = ItemCategory.standard(.other)
         @Published var isDeadline = false
         @Published var dateDeadline = Calendar.current.date(byAdding: .day, value: 1, to: .now) ?? .now
         @Published var showColorPicker = false
         @Published var selectedColor: Color = .white
+        @Published var currentOrientation = UIDevice.current.orientation
         @Published var allCategories: [ItemCategory] = []
         @Published var customCategories: [CustomCategory] = [] {
             didSet {
@@ -55,20 +55,20 @@ extension ToDoItemDetailView {
         func save() {
             let todoItem = TodoItem(
                 id: self.id,
-                text: self.text,
+                text: self.text.trimming(),
                 importance: self.importance,
                 category: self.category,
                 deadline: self.isDeadline ? self.dateDeadline : nil,
                 isCompleted: false,
                 color: self.selectedColor.hexString
             )
-            fileCache.updateTodoItem(todoItem, to: Constants.fileName.rawValue)
+            fileCache.addTodoItemAndSave(item: todoItem)
         }
         
         func delete() {
             guard let item = self.item else { return }
             self.fileCache.deleteTodoItem(item.id)
-            self.fileCache.saveTodoItems(to: Constants.fileName.rawValue)
+            self.fileCache.saveTodoItems()
         }
         
         func loadCategories() {
@@ -91,8 +91,10 @@ extension ToDoItemDetailView {
             }
         }
         
-        @Published var currentOrientation = UIDevice.current.orientation
-        
+        func toggleShowColorPicker() {
+            showColorPicker.toggle()
+        }
+                
         let orientationHasChanged = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
             .makeConnectable()
             .autoconnect()

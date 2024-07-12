@@ -61,7 +61,7 @@ extension ViewBuilder: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let uncompleteAction = UIContextualAction(style: .normal, title: "Uncomplete") { [weak self] (action, view, completionHandler) in
+        let uncompleteAction = UIContextualAction(style: .normal, title: "Uncomplete") { [weak self] (_, _, completionHandler) in
             self?.toggleTodoItemCompletion(at: indexPath, value: false)
             completionHandler(true)
         }
@@ -71,7 +71,7 @@ extension ViewBuilder: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let completeAction = UIContextualAction(style: .normal, title: "Complete") { [weak self] (action, view, completionHandler) in
+        let completeAction = UIContextualAction(style: .normal, title: "Complete") { [weak self] (_, _, completionHandler) in
             self?.toggleTodoItemCompletion(at: indexPath, value: true)
             completionHandler(true)
         }
@@ -81,12 +81,14 @@ extension ViewBuilder: UITableViewDataSource, UITableViewDelegate {
     }
 
     func toggleTodoItemCompletion(at indexPath: IndexPath, value: Bool) {
-        let id = sections[indexPath.section].todo[indexPath.row].id
+        let item = sections[indexPath.section].todo[indexPath.row]
         let isCompleted = sections[indexPath.section].todo[indexPath.row].isCompleted
 
         guard value != isCompleted else { return }
+        
+        let updatedItem = item.updated(isCompleted: !isCompleted)
 
-        fileCache.updateTodoItem(id: id, isCompleted: value, to: Constants.fileName.rawValue)
+        fileCache.updateTodoItem(updatedItem: updatedItem)
 
         DispatchQueue.main.async { [weak self] in
             self?.manager.loadItem {

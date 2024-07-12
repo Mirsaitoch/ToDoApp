@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CocoaLumberjackSwift
 
 struct TodoItemList: View {
     @StateObject var viewModel = ViewModel()
@@ -14,7 +15,7 @@ struct TodoItemList: View {
         NavigationStack {
             ZStack {
                 VStack {
-                    List() {
+                    List {
                         Section(header: header) {
                             ForEach(Array(viewModel.filteredItems), id: \.id) { item in
                                 ToDoItemCell(todoId: item.id) {
@@ -24,7 +25,6 @@ struct TodoItemList: View {
                                 .listRowBackground(Color.backSecondary)
                                 .swipeActions(edge: .leading) {
                                     Button {
-                                        viewModel.triggerFeedback()
                                         viewModel.compliteItem(item: item)
                                         
                                     } label: {
@@ -34,7 +34,6 @@ struct TodoItemList: View {
                                 }
                                 .swipeActions(edge: .trailing) {
                                     Button {
-                                        viewModel.triggerFeedback()
                                         viewModel.deleteItem(id: item.id)
                                         
                                     } label: {
@@ -51,6 +50,7 @@ struct TodoItemList: View {
                                     .tint(.gray)
                                 }
                             }
+                            newItemTextField
                         }
                         .textCase(nil)
                     }
@@ -59,23 +59,23 @@ struct TodoItemList: View {
                 .background(Color.backPrimary)
                 
                 PlusButton()
-                    .onTapGesture {
-                        viewModel.showDetailView.toggle()
-                    }
+                    .onTapGesture { viewModel.showDetailView.toggle() }
             }
             .toolbar {
                 ToolbarItem {
-                    NavigationLink() {
+                    NavigationLink {
                         CalendarView()
                     } label: {
                         Image(systemName: "calendar")
+                            .foregroundStyle(.labelPrimary)
                     }
                 }
                 ToolbarItem {
-                    NavigationLink() {
+                    NavigationLink {
                         AddCategoryView()
                     } label: {
                         Image(systemName: "gear")
+                            .foregroundStyle(.labelPrimary)
                     }
                 }
             }
@@ -84,15 +84,13 @@ struct TodoItemList: View {
         .scrollIndicators(.hidden)
         .scrollContentBackground(.hidden)
         .background(Color.backPrimary)
-        .sheet(isPresented: $viewModel.showDetailView, onDismiss: {
-            viewModel.selectedItem = nil
-            viewModel.loadItems()
-        }) {
-            ToDoItemDetailView(itemID: viewModel.selectedItem?.id ?? UUID())
+        .sheet(isPresented: $viewModel.showDetailView, onDismiss: viewModel.sheetDismiss) {
+            DetailView(itemID: viewModel.selectedItem?.id ?? UUID())
         }
         .onAppear {
             self.viewModel.setup()
             viewModel.loadItems()
+            DDLogInfo("TodoItemList has appeared")
         }
     }
     
@@ -120,16 +118,30 @@ struct TodoItemList: View {
                         Text("Сортировать по важности")
                     }
                 }
-                Button(action: {
-                    viewModel.showCompleted ? viewModel.hideCompletedTasks() : viewModel.showCompletedTasks()
-                }) {
-                    Text(viewModel.showCompleted ? "Скрыть выполненные" : "Показать выполненные")
+                Button(action: viewModel.showCompleted ? viewModel.hideCompletedTasks : viewModel.showCompletedTasks) {
+                    HStack {
+                        Image(systemName: viewModel.showCompleted ? "eye.slash.circle.fill" : "eye.circle.fill")
+                        Text(viewModel.showCompleted ? "Скрыть выполненные" : "Показать выполненные")
+                    }
                 }
             } label: {
                 Label("Фильтр", systemImage: "line.horizontal.3.decrease.circle")
                     .labelStyle(.titleAndIcon)
+                    .foregroundColor(.labelPrimary)
             }
         }
+    }
+    
+    var newItemTextField: some View {
+        TextField("", text: $viewModel.newItemText, prompt: Text("Новое"))
+            .onSubmit {
+                if viewModel.newItemText.trimming() == "" {
+                    viewModel.newItemText = ""
+                } else {
+                    viewModel.addItem(TodoItem(text: viewModel.newItemText.trimming()))
+                    viewModel.newItemText = ""
+                }
+            }
     }
 }
 

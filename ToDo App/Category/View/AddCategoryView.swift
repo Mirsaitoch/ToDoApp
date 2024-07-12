@@ -22,7 +22,6 @@ struct AddCategoryView: View {
                 }
                 .listRowBackground(Color.backSecondary)
 
-                
                 Section(header: Text("Цвет категории")) {
                     ColorPicker("Выберите цвет", selection: $selectedColor)
                 }
@@ -42,7 +41,6 @@ struct AddCategoryView: View {
         )
     }
 }
-
 
 #Preview {
     AddCategoryView()
