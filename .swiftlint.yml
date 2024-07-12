@@ -1,0 +1,7 @@
+line_length:
+- 260 # warning
+- 350 # error
+disabled_rules:
+- trailing_whitespace
+- force_cast
+- non_optional_string_data_conversion

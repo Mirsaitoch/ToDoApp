@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 final class ViewManager {
     private let dateFormatter = DateConverter()
     static let shared = ViewManager()
@@ -38,13 +39,13 @@ final class ViewManager {
     }
 
     func loadItem(completion: @escaping () -> Void) {
-        DispatchQueue.global(qos: .userInteractive).async {
-            self.fileCache.loadTodoItems(from: Constants.fileName.rawValue)
+//        DispatchQueue.global(qos: .userInteractive).async {
+            self.fileCache.loadTodoItems(from: Constants.fileName)
             self.items = self.fileCache.getTodoItems()
             DispatchQueue.main.async {
                 completion()
             }
-        }
+//        }
     }
 
     func groupedSectionsByDate() -> [TableSection] {
@@ -91,9 +92,6 @@ final class ViewManager {
         return sections
     }
 
-
-
-    
     func getSortedDates() -> [String] {
         let deadlines = items.compactMap { $0.deadline }
         let hasNilDeadline = items.contains { $0.deadline == nil }

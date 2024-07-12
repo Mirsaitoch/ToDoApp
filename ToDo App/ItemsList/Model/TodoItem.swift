@@ -24,7 +24,17 @@ struct TodoItem: Identifiable, Equatable, Hashable {
     let changeDate: Date?
     var color: String?
     
-    init(id: UUID = UUID(), text: String, importance: Priority, category: ItemCategory, deadline: Date? = nil, isCompleted: Bool, createDate: Date = Date(), changeDate: Date? = nil, color: String = Constants.whiteHex.rawValue) {
+    init(
+        id: UUID = UUID(),
+        text: String,
+        importance: Priority = .usual,
+        category: ItemCategory = .standard(.other),
+        deadline: Date? = nil,
+        isCompleted: Bool = false,
+        createDate: Date = Date(),
+        changeDate: Date? = nil,
+        color: String = Constants.whiteHex
+    ) {
         self.id = id
         self.text = text
         self.importance = importance
@@ -36,7 +46,12 @@ struct TodoItem: Identifiable, Equatable, Hashable {
         self.color = color
     }
     
-    static var testItem = TodoItem(text: "Купить сыр", importance: .unimportant, category: .standard(.work), isCompleted: false)
+    static let testItem = TodoItem(
+        text: "Купить сыр",
+        importance: .unimportant,
+        category: .standard(.work),
+        isCompleted: false
+    )
 }
 
 enum Priority: String, CaseIterable, Identifiable {
@@ -48,7 +63,15 @@ enum Priority: String, CaseIterable, Identifiable {
 }
 
 extension TodoItem {
-    func updated(text: String? = nil, importance: Priority? = nil, category: ItemCategory? = nil, deadline: Date? = nil, isCompleted: Bool? = nil, changeDate: Date = Date(), color: String? = nil) -> TodoItem {
+    func updated(
+        text: String? = nil,
+        importance: Priority? = nil,
+        category: ItemCategory? = nil,
+        deadline: Date? = nil,
+        isCompleted: Bool? = nil,
+        changeDate: Date = Date(),
+        color: String? = nil
+    ) -> TodoItem {
         return TodoItem(
             id: self.id,
             text: text ?? self.text,
@@ -58,8 +81,7 @@ extension TodoItem {
             isCompleted: isCompleted ?? self.isCompleted,
             createDate: self.createDate,
             changeDate: changeDate,
-            color: color ?? self.color ?? Constants.whiteHex.rawValue
+            color: color ?? self.color ?? Constants.whiteHex
         )
     }
 }
-

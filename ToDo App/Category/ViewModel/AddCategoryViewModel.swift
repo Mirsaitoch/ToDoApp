@@ -8,11 +8,9 @@
 import Foundation
 import SwiftUI
 
-import Foundation
-import SwiftUI
-
 extension AddCategoryView {
-    class ViewModel: ObservableObject {
+    @MainActor
+    final class ViewModel: ObservableObject {
         @Published var category: ItemCategory = .standard(.other)
         @Published var allCategories: [ItemCategory] = []
         @Published var customCategories: [CustomCategory] = [] {

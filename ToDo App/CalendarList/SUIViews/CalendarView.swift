@@ -23,12 +23,11 @@ struct CalendarView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showDetailView, onDismiss: {
             DispatchQueue.main.async {
-                
                 needsUpdate = true
             }
-        }) {
-            ToDoItemDetailView(itemID: UUID())
-        }
+        }, content: {
+            DetailView(itemID: UUID())
+        })
     }
 }
 

@@ -6,20 +6,18 @@
 //
 
 import Foundation
+import FileCachePackage
 
-extension TodoItem {
+extension TodoItem: FileCachePackage.CachableCsv {
     static func parse(csv: String) -> [TodoItem] {
         var toDoItems = [TodoItem]()
-        
         let rows = csv.split(separator: "\n")
-                
         for row in rows {
             let csvRow = String(row)
             if let todoItem = TodoItem.fromCSV(csvRow) {
                 toDoItems.append(todoItem)
             }
         }
-        
         return toDoItems
     }
     
@@ -28,7 +26,7 @@ extension TodoItem {
         let changeDateString = changeDate?.description ?? ""
         let colorString = color ?? "#FFFFFF"
         
-        let escapedText = text.contains(",") ? "\"\(text)\"" : text // заключаем текстовое поле в кавычки, если оно содержит запятые
+        let escapedText = text.contains(",") ? "\"\(text)\"" : text
         
         return "\(id),\(escapedText),\(importance.rawValue),\(deadlineString),\(isCompleted),\(createDate.description),\(changeDateString),\(colorString)"
     }
@@ -72,5 +70,3 @@ extension TodoItem {
         return TodoItem(id: id, text: text, importance: importance, category: category, deadline: deadline, isCompleted: isCompleted, createDate: createDate, changeDate: changeDate, color: color)
     }
 }
-
-

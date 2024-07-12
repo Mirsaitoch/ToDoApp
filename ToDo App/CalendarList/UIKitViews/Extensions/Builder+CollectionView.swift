@@ -14,7 +14,8 @@ extension ViewBuilder: UICollectionViewDelegate, UICollectionViewDataSource, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! DateCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? DateCell else { return UICollectionViewCell() }
+        
         let displayText: String
         
         displayText = uniqueDatesArray[indexPath.row] ?? "No Date"

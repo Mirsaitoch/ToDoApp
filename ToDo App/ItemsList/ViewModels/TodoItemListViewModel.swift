@@ -10,20 +10,20 @@ import SwiftUI
 import Combine
 
 extension TodoItemList {
-    class ViewModel: ObservableObject {
+    @MainActor
+    final class ViewModel: ObservableObject {
         
         @Published var filteredItems: [TodoItem] = []
         @Published var selectedItem: TodoItem?
         @Published var showDetailView = false
         @Published var currentSortOption: SortOption = .byDate
+        @Published var newItemText = ""
         
         var fileCache = FileCache.shared
         var completedCount = 0
-        private let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
         private var cancellables: Set<AnyCancellable> = []
         var showCompleted = true
         var firstInit = true
-        
         
         func setup() {
             self.setupSubscriptions()
@@ -41,19 +41,16 @@ extension TodoItemList {
         
         func deleteItem(id: UUID) {
             fileCache.deleteTodoItem(id)
-            fileCache.saveTodoItems(to: Constants.fileName.rawValue)
+            fileCache.saveTodoItems()
         }
         
         func compliteItem(item: TodoItem) {
-            fileCache.updateTodoItem(
-                id: item.id,
-                isCompleted: !item.isCompleted,
-                to: Constants.fileName.rawValue
-            )
+            let newItem = item.updated(isCompleted: !item.isCompleted)
+            fileCache.updateTodoItem(updatedItem: newItem)
         }
         
         func loadItems() {
-            self.fileCache.loadTodoItems(from: Constants.fileName.rawValue)
+            self.fileCache.loadTodoItems(from: Constants.fileName)
             if self.firstInit {
                 self.firstInit.toggle()
                 self.sortedByCreatingDate()
@@ -65,10 +62,16 @@ extension TodoItemList {
             return fileCache.toDoItems[id]
         }
         
-        func triggerFeedback() {
-            feedbackGenerator.impactOccurred()
+        func addItem(_ item: TodoItem) {
+            fileCache.addTodoItemAndSave(item: item)
         }
         
+        func sheetDismiss() {
+            selectedItem = nil
+            loadItems()
+        }
+
+// MARK: - Filters
         private func updateFilteredItems(items: [UUID: TodoItem], sortOption: SortOption) {
             if showCompleted {
                 self.filteredItems = items.values.sorted {
@@ -118,9 +121,9 @@ extension TodoItemList {
             }
         }
         
-        private func compareImportance(_ a: Priority, _ b: Priority) -> Bool {
+        private func compareImportance(_ first: Priority, _ second: Priority) -> Bool {
             let order: [Priority: Int] = [.important: 0, .usual: 1, .unimportant: 2]
-            return order[a]! < order[b]!
+            return order[first]! < order[second]!
         }
         
         func showCompletedTasks() {
@@ -137,13 +140,6 @@ extension TodoItemList {
         func hideCompletedTasks() {
             self.showCompleted = false
             self.filteredItems = fileCache.toDoItems.values.filter { !$0.isCompleted }.sorted(by: { $0.createDate > $1.createDate })
-            
-        }
-        
-        enum SortOption: String {
-            case none = "Без сортировки"
-            case byDate = "По дате создания"
-            case byImportance = "По важности"
         }
     }
 }

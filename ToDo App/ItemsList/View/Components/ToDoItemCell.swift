@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct ToDoItemCell: View {
-    
-    let fileCache = FileCache.shared
     @State var todoId: UUID
-    var dateConverter = DateConverter()
-    var action: () -> ()
+    private let dateConverter = DateConverter()
+    var action: () -> Void
+    @StateObject var viewModel = ViewModel()
     
     var body: some View {
         HStack {
@@ -35,15 +34,15 @@ struct ToDoItemCell: View {
     
     var colorRectangle: some View {
         Rectangle()
-            .fill(Color(hex: fileCache.toDoItems[todoId]?.color ?? "#FFFFFF"))
+            .fill(Color(hex: viewModel.getColor(for: todoId)))
             .frame(width: 5)
             .overlay(Rectangle().stroke(Color.labelPrimary, style: StrokeStyle(lineWidth: 1)))
     }
     
     var textTask: some View {
         HStack {
-            if let todo = fileCache.toDoItems[todoId] {
-                if !todo.isCompleted && todo.importance != .usual{
+            if let todo = viewModel.getItem(for: todoId) {
+                if !todo.isCompleted && todo.importance != .usual {
                     Text(todo.importance == .important ? Image(systemName: "exclamationmark.2") : Image(systemName: "arrow.down"))
                         .foregroundStyle(todo.importance == .important ? .colorRed : .colorGray)
                         .opacity(todo.isCompleted ? 0 : 1)
@@ -64,7 +63,7 @@ struct ToDoItemCell: View {
     
     var calendar: some View {
         HStack {
-            if let todo = fileCache.toDoItems[todoId] {
+            if let todo = viewModel.getItem(for: todoId) {
                 if let deadline = dateConverter.convertDateToStringDayMonth(date: todo.deadline) {
                     Text(Image(systemName: "calendar"))
                     
@@ -78,7 +77,7 @@ struct ToDoItemCell: View {
     
     var smallCircle: some View {
         VStack {
-            if let todo = fileCache.toDoItems[todoId] {
+            if let todo = viewModel.getItem(for: todoId) {
                 VStack {
                     if todo.isCompleted {
                         CompleteCircle()
@@ -91,13 +90,12 @@ struct ToDoItemCell: View {
                     }
                 }
                 .onTapGesture {
-                    fileCache.updateTodoItem(id: todo.id, isCompleted: !todo.isCompleted, to: Constants.fileName.rawValue)
+                    viewModel.updateItem(for: todoId)
                 }
             }
         }
     }
 }
-
 
 #Preview {
     ToDoItemCell(todoId: TodoItem.testItem.id) {

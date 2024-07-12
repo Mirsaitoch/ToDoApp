@@ -1,5 +1,5 @@
 //
-//  ToDoItemDetailView.swift
+//  DetailView.swift
 //  ToDo App
 //
 //  Created by Мирсаит Сабирзянов on 25.06.2024.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct ToDoItemDetailView: View {
+struct DetailView: View {
     @State var itemID: UUID
     @StateObject var viewModel: ViewModel
-    @FocusState private var isFocused: Bool
+    @FocusState var isFocused: Bool
     @Environment(\.dismiss) var dismiss
     
     init(itemID: UUID) {
@@ -44,8 +44,7 @@ struct ToDoItemDetailView: View {
                             viewModel.selectedColor = Color(hex: colorHex)
                         }
                     }
-            }
-            else {
+            } else {
                 portrait
                     .background(.backPrimary)
                     .navigationTitle("Дело")
@@ -80,7 +79,7 @@ struct ToDoItemDetailView: View {
         VStack {
             Form {
                 Section {
-                    customTextEditor
+                    TextEditorWithPlaceholder(text: $viewModel.text)
                 }
                 .listRowBackground(Color.backSecondary)
                 
@@ -95,11 +94,9 @@ struct ToDoItemDetailView: View {
                 .listRowBackground(Color.backSecondary)
                 
                 Section {
-                    Button(action: {
-                        viewModel.showColorPicker.toggle()
-                    }) {
+                    Button(action: viewModel.toggleShowColorPicker ) {
                         HStack {
-                            VStack(alignment: .leading){
+                            VStack(alignment: .leading) {
                                 Text("Цвет")
                                 Text(viewModel.selectedColor.hexString)
                                     .bold()
@@ -128,7 +125,7 @@ struct ToDoItemDetailView: View {
         HStack {
             Form {
                 Section {
-                    customTextEditor
+                    TextEditorWithPlaceholder(text: $viewModel.text)
                         .frame(maxWidth: isFocused ? .infinity : .none, maxHeight: .infinity)
                         .background(Color.backSecondary)
                         .transition(.slide)
@@ -150,11 +147,11 @@ struct ToDoItemDetailView: View {
                     .listRowBackground(Color.backSecondary)
                     
                     Section {
-                        Button(action: {
+                        Button {
                             viewModel.showColorPicker.toggle()
-                        }) {
+                        } label: {
                             HStack {
-                                VStack(alignment: .leading){
+                                VStack(alignment: .leading) {
                                     Text("Цвет")
                                     Text(viewModel.selectedColor.hexString)
                                         .bold()
@@ -179,123 +176,8 @@ struct ToDoItemDetailView: View {
             }
         }
     }
-    
-    var customTextEditor: some View {
-        ZStack {
-            TextEditor(text: $viewModel.text)
-                .frame(minHeight: 150, maxHeight: .infinity)
-                .focused($isFocused)
-                .foregroundStyle(isFocused || !viewModel.text.isEmpty ? .labelPrimary : .labelTertiary)
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button("Готово") {
-                            isFocused = false
-                        }
-                    }
-                }
-            if viewModel.text.isEmpty {
-                VStack {
-                    HStack {
-                        Text(viewModel.emptyText)
-                            .foregroundStyle(.tertiary)
-                            .padding(.top, 8)
-                            .padding(.leading, 5)
-                        Spacer()
-                    }
-                    Spacer()
-                }
-            }
-        }
-    }
-    
-    var importancePicker: some View {
-        HStack {
-            Text("Важность")
-                .foregroundStyle(.labelPrimary)
-                .font(.system(size: 17))
-            Spacer()
-            Picker("Важность", selection: $viewModel.importance) {
-                ForEach(Priority.allCases) { priority in
-                    switch priority {
-                    case .unimportant:
-                        Image(systemName: "arrow.down")
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.colorGray)
-                    case .usual:
-                        Text("нет")
-                    case .important:
-                        Image(systemName: "exclamationmark.2")
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.colorRed)
-                    }
-                }
-            }
-            .frame(width: 175)
-            .pickerStyle(.segmented)
-        }
-    }
-    
-    var categoriesPicker: some View {
-        Picker("Категория", selection: $viewModel.category) {
-            ForEach(viewModel.allCategories) { category in
-                HStack {
-                    Image(systemName: "circle.fill")
-                        .symbolRenderingMode(.palette)
-                        .foregroundColor(category.color)
-                    Text(category.name)
-                }
-                .tag(category)
-            }
-        }
-        .pickerStyle(.menu)
-    }
-    
-    var deadlineToggle: some View {
-        Toggle(isOn: $viewModel.isDeadline.animation()) {
-            VStack(alignment: .leading, spacing: 5) {
-                HStack {
-                    Text("Сделать до")
-                        .foregroundStyle(.labelPrimary)
-                }
-                
-                if viewModel.isDeadline {
-                    Text(viewModel.dateDeadlineFormated)
-                        .font(.subheadline)
-                        .foregroundColor(.blue)
-                }
-            }
-        }
-    }
-    
-    var calendarPicker: some View {
-        DatePicker(
-            "Start Date",
-            selection: $viewModel.dateDeadline,
-            in: Date.now...,
-            displayedComponents: [.date]
-        )
-        .datePickerStyle(.graphical)
-        .environment(\.locale, Locale.init(identifier: "ru"))
-        
-    }
-    
-    var deleteButton: some View {
-        Button(role: .destructive){
-            viewModel.delete()
-            dismiss()
-        } label: {
-            HStack {
-                Spacer()
-                Text("Удалить")
-                Spacer()
-            }
-            .padding(.vertical, 8)
-        }
-        .disabled(viewModel.item?.id == nil)
-    }
 }
 
 #Preview {
-    ToDoItemDetailView(itemID: UUID())
+    DetailView(itemID: UUID())
 }

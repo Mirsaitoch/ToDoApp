@@ -1,6 +1,6 @@
 import UIKit
 
-
+@MainActor
 final class ViewBuilder: NSObject {
     let manager = ViewManager.shared
 
@@ -17,28 +17,26 @@ final class ViewBuilder: NSObject {
     private(set) var datesCollection: UICollectionView!
     private(set) var itemsTable: UITableView!
     
-    private let dataQueue = DispatchQueue(label: "com.todoapp.dataQueue")
+//    private let dataQueue = DispatchQueue(label: "com.todoapp.dataQueue")
     var selectedDateIndex: IndexPath?
 
     init(viewController: UIViewController) {
         self.viewController = viewController
         self.view = viewController.view
         super.init()
-        self.manager.loadItem 
-        {
+        self.manager.loadItem {
             self.reloadData()
         }
     }
     
     func updatePage() {
-        self.manager.loadItem
-        {
+        self.manager.loadItem {
             self.reloadData()
         }
     }
     
     func reloadData() {
-        dataQueue.async {
+//        dataQueue.async {
             self.uniqueDatesArray = self.manager.getSortedDates()
 
             self.sections = self.manager.groupedSectionsByDate()
@@ -46,7 +44,7 @@ final class ViewBuilder: NSObject {
                 self.datesCollection.reloadData()
                 self.itemsTable.reloadData()
             }
-        }
+//        }
     }
 
     func getDatesSlider() {
@@ -60,8 +58,7 @@ final class ViewBuilder: NSObject {
         NSLayoutConstraint.activate([
             datesCollection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             datesCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            datesCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            datesCollection.heightAnchor.constraint(equalToConstant: 100) 
+            datesCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
         addHorizontalSeparator(below: datesCollection)
@@ -83,7 +80,7 @@ final class ViewBuilder: NSObject {
             itemsTable.topAnchor.constraint(equalTo: datesCollection.bottomAnchor),
             itemsTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             itemsTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            itemsTable.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            itemsTable.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
@@ -104,29 +101,24 @@ final class ViewBuilder: NSObject {
     func updateSelectedDate(for date: String) {
         guard let collectionView = datesCollection else { return }
         
-        for (index, uniqueDate) in uniqueDatesArray.enumerated() {
-            if uniqueDate == date {
-                let indexPath = IndexPath(row: index, section: 0)
-                selectedDateIndex = indexPath
-                collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-                collectionView.reloadData()
-                return
-            }
+        for (index, uniqueDate) in uniqueDatesArray.enumerated() where uniqueDate == date {
+            let indexPath = IndexPath(row: index, section: 0)
+            selectedDateIndex = indexPath
+            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+            collectionView.reloadData()
+            return
         }
     }
     
     func scrollToSection(for date: String) {
         guard let tableView = itemsTable else { return }
         
-        for (index, section) in sections.enumerated() {
-            if section.title == date {
-                let indexPath = IndexPath(row: 0, section: index)
-                tableView.scrollToRow(at: indexPath, at: .top, animated: true)
-                return
-            }
+        for (index, section) in sections.enumerated() where section.title == date {
+            let indexPath = IndexPath(row: 0, section: index)
+            tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            return
         }
     }
-    
     
     func updateSelectedDateForVisibleSection() {
         guard let tableView = itemsTable else { return }
@@ -140,4 +132,3 @@ final class ViewBuilder: NSObject {
         }
     }
 }
-

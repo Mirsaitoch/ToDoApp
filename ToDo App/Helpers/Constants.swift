@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Constants: String {
-    case fileName = "Items.json"
-    case whiteHex = "#FFFFFF"
+enum Constants {
+    static let fileName = "Items.json"
+    static let whiteHex = "#FFFFFF"
 }
