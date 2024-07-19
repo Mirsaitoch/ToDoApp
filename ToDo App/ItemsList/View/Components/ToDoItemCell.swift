@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import CocoaLumberjackSwift
 
 struct ToDoItemCell: View {
     @State var todoId: UUID
-    private let dateConverter = DateConverter()
+    @ObservedObject var viewModel: TodoItemList.ViewModel
     var action: () -> Void
-    @StateObject var viewModel = ViewModel()
+    private let dateConverter = DateConverter()
     
     var body: some View {
         HStack {
@@ -42,18 +43,18 @@ struct ToDoItemCell: View {
     var textTask: some View {
         HStack {
             if let todo = viewModel.getItem(for: todoId) {
-                if !todo.isCompleted && todo.importance != .usual {
+                if !todo.done && todo.importance != .basic {
                     Text(todo.importance == .important ? Image(systemName: "exclamationmark.2") : Image(systemName: "arrow.down"))
                         .foregroundStyle(todo.importance == .important ? .colorRed : .colorGray)
-                        .opacity(todo.isCompleted ? 0 : 1)
-                        .animation(.easeInOut(duration: 2), value: todo.isCompleted)
+                        .opacity(todo.done ? 0 : 1)
+                        .animation(.easeInOut(duration: 2), value: todo.done)
                 }
                 
                 Text("\(todo.text)")
                     .lineLimit(3)
-                    .strikethrough(todo.isCompleted, color: .labelTertiary)
-                    .foregroundStyle(todo.isCompleted ? .labelTertiary : .labelPrimary)
-                    .animation(.default, value: todo.isCompleted)
+                    .strikethrough(todo.done, color: .labelTertiary)
+                    .foregroundStyle(todo.done ? .labelTertiary : .labelPrimary)
+                    .animation(.default, value: todo.done)
                 
             }
         }
@@ -79,7 +80,7 @@ struct ToDoItemCell: View {
         VStack {
             if let todo = viewModel.getItem(for: todoId) {
                 VStack {
-                    if todo.isCompleted {
+                    if todo.done {
                         CompleteCircle()
                     } else {
                         if todo.importance == .important {
@@ -90,15 +91,15 @@ struct ToDoItemCell: View {
                     }
                 }
                 .onTapGesture {
-                    viewModel.updateItem(for: todoId)
+                    Task {
+                        do {
+                            try await viewModel.updateItem(id: todoId)
+                        } catch {
+                            DDLogError("Error when updating a task")
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-#Preview {
-    ToDoItemCell(todoId: TodoItem.testItem.id) {
-        print("8)")
     }
 }

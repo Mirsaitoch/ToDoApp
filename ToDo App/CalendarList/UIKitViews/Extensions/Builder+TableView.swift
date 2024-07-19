@@ -82,19 +82,20 @@ extension ViewBuilder: UITableViewDataSource, UITableViewDelegate {
 
     func toggleTodoItemCompletion(at indexPath: IndexPath, value: Bool) {
         let item = sections[indexPath.section].todo[indexPath.row]
-        let isCompleted = sections[indexPath.section].todo[indexPath.row].isCompleted
+        let isCompleted = sections[indexPath.section].todo[indexPath.row].done
 
         guard value != isCompleted else { return }
         
-        let updatedItem = item.updated(isCompleted: !isCompleted)
-
-        fileCache.updateTodoItem(updatedItem: updatedItem)
-
-        DispatchQueue.main.async { [weak self] in
-            self?.manager.loadItem {
-                guard let self = self else { return }
-                self.sections = self.manager.groupedSectionsByDate()
-                self.itemsTable?.reloadRows(at: [indexPath], with: .automatic)
+        let updatedItem = item.updated(done: !isCompleted)
+        
+        Task {
+            do {
+                try await manager.updateItem(toDoService: toDoService, updatedItem: updatedItem) {
+                    self.sections = self.manager.groupedSectionsByDate()
+                    self.itemsTable?.reloadRows(at: [indexPath], with: .automatic)
+                }
+            } catch {
+                
             }
         }
     }

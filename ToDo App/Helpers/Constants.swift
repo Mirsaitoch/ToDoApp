@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import UIKit
 
 enum Constants {
     static let fileName = "Items.json"
     static let whiteHex = "#FFFFFF"
+    static let token = "сюда токен"
 }

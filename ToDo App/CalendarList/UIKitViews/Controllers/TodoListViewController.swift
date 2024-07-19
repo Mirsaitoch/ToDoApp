@@ -13,7 +13,7 @@ import SwiftUI
 class TodoListViewController: UIViewController {
     
     private lazy var builder = {
-        return ViewBuilder(viewController: self)
+        return ViewBuilder(viewController: self, toDoService: ToDoService(networkingService: DefaultNetworkingService(token: Constants.token)))
     }()
 
     override func viewDidLoad() {
@@ -25,7 +25,7 @@ class TodoListViewController: UIViewController {
         builder.getItemsTable()
     }
     
-    func updatePage() {
-        builder.updatePage()
+    func updatePage() async {
+        await builder.updatePage()
     }
 }

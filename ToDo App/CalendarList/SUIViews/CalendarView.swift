@@ -10,24 +10,38 @@ import SwiftUI
 struct CalendarView: View {
     @State var showDetailView = false
     @State var needsUpdate = false
+    @Binding var isPresented: Bool
+
     var body: some View {
-        ZStack {
-            Color.backPrimary.ignoresSafeArea()
-            UIKitCalendarView(needsUpdate: $needsUpdate)
-            PlusButton()
-                .onTapGesture {
-                    showDetailView.toggle()
-                }
-        }
-        .navigationTitle("Мои дела")
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showDetailView, onDismiss: {
-            DispatchQueue.main.async {
-                needsUpdate = true
+        NavigationStack {
+            ZStack {
+                Color.backPrimary.ignoresSafeArea()
+                UIKitCalendarView(needsUpdate: $needsUpdate)
+                PlusButton()
+                    .onTapGesture {
+                        showDetailView.toggle()
+                    }
             }
-        }, content: {
-            DetailView(itemID: UUID())
-        })
+            .navigationTitle("Мои дела")
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        isPresented = false
+                    } label: {
+                        Image(systemName: "arrow.backward")
+                            .font(.title)
+                            .foregroundStyle(.black)
+                    }
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showDetailView, content: {
+                DetailView(todo: nil) { _, _  in 
+                    needsUpdate = true
+                }
+            })
+        }
     }
 }
 
@@ -40,14 +54,16 @@ struct UIKitCalendarView: UIViewControllerRepresentable {
     
     func updateUIViewController(_ uiViewController: TodoListViewController, context: Context) {
         if needsUpdate {
-            uiViewController.updatePage()
-            DispatchQueue.main.async {
-                needsUpdate = false
+            Task {
+                do {
+                    await uiViewController.updatePage()
+                }
             }
+            needsUpdate = false
         }
     }
 }
 
 #Preview {
-    CalendarView()
+    CalendarView(isPresented: .constant(true))
 }

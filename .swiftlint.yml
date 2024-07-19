@@ -1,6 +1,15 @@
 line_length:
-- 260 # warning
-- 350 # error
+- 450 # warning
+- 500 # error
+type_body_length:
+- 450 # warning
+- 550 # error
+file_length:
+- 450 # warning
+cyclomatic_complexity:
+- 12 # warning
+function_body_length:
+- 60 # warning
 disabled_rules:
 - trailing_whitespace
 - force_cast
