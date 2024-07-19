@@ -6,16 +6,33 @@
 //
 
 import SwiftUI
+import CocoaLumberjackSwift
 
 struct DetailView: View {
-    @State var itemID: UUID
+    @State var todo: TodoItem
+    var isNewItem = true
     @StateObject var viewModel: ViewModel
     @FocusState var isFocused: Bool
     @Environment(\.dismiss) var dismiss
+    var completion: (TodoItem, Bool) -> Void
     
-    init(itemID: UUID) {
-        self.itemID = itemID
-        self._viewModel = StateObject(wrappedValue: ViewModel(id: itemID))
+    init(todo: TodoItem?, completion: @escaping (TodoItem, Bool) -> Void) {
+        self.completion = completion
+        
+        var tempTodo = TodoItem(text: "")
+        
+        if let todoItem = todo {
+            tempTodo = todoItem
+            self.isNewItem = false
+        }
+        
+        self._todo = State(initialValue: tempTodo)
+        
+        let viewModel = ViewModel(
+            toDoService: ToDoService(networkingService: DefaultNetworkingService(token: Constants.token)),
+            todo: tempTodo
+        )
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
@@ -33,15 +50,23 @@ struct DetailView: View {
                         }
                         ToolbarItem(placement: .topBarTrailing) {
                             Button("Сохранить") {
-                                viewModel.save()
+                                Task {
+                                    do {
+                                        if isNewItem {
+                                            try await viewModel.addItem()
+                                        } else {
+                                            try await viewModel.updateItem()
+                                        }
+                                    }
+                                }
+                                completion(viewModel.getUpdatedItem(), false)
                                 dismiss()
                             }.disabled(viewModel.text.isEmpty)
                         }
                     }
                     .onAppear {
-                        self.viewModel.setup()
-                        if let colorHex = viewModel.item?.color {
-                            viewModel.selectedColor = Color(hex: colorHex)
+                        if !isNewItem {
+                            viewModel.setup()
                         }
                     }
             } else {
@@ -57,15 +82,23 @@ struct DetailView: View {
                         }
                         ToolbarItem(placement: .topBarTrailing) {
                             Button("Сохранить") {
-                                viewModel.save()
+                                Task {
+                                    do {
+                                        if isNewItem {
+                                            try await viewModel.addItem()
+                                        } else {
+                                            try await viewModel.updateItem()
+                                        }
+                                    }
+                                }
+                                completion(viewModel.getUpdatedItem(), false)
                                 dismiss()
                             }.disabled(viewModel.text.isEmpty)
                         }
                     }
                     .onAppear {
-                        self.viewModel.setup()
-                        if let colorHex = viewModel.item?.color {
-                            viewModel.selectedColor = Color(hex: colorHex)
+                        if !isNewItem {
+                            viewModel.setup()
                         }
                     }
             }
@@ -85,7 +118,6 @@ struct DetailView: View {
                 
                 Section {
                     importancePicker
-                    categoriesPicker
                     deadlineToggle
                     if viewModel.isDeadline {
                         calendarPicker
@@ -138,7 +170,6 @@ struct DetailView: View {
                 Form {
                     Section {
                         importancePicker
-                        categoriesPicker
                         deadlineToggle
                         if viewModel.isDeadline {
                             calendarPicker
@@ -179,5 +210,7 @@ struct DetailView: View {
 }
 
 #Preview {
-    DetailView(itemID: UUID())
+    DetailView(todo: nil) { _, _  in 
+        print("")
+    }
 }

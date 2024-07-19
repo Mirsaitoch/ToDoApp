@@ -24,6 +24,7 @@ struct TextEditorWithPlaceholder: View {
             }
             
             TextEditor(text: $text)
+                .autocorrectionDisabled()
                 .frame(minHeight: 150, maxHeight: 300)
                 .padding(.top, text.isEmpty ? 0 : 0)
                 .foregroundStyle(.primary)

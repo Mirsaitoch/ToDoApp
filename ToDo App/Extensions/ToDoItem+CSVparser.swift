@@ -23,12 +23,13 @@ extension TodoItem: FileCachePackage.CachableCsv {
     
     func toCSV() -> String {
         let deadlineString = deadline?.description ?? ""
-        let changeDateString = changeDate?.description ?? ""
+        let changedAtString = changedAt.description
         let colorString = color ?? "#FFFFFF"
+        let filesString = files?.joined(separator: ";") ?? ""
         
         let escapedText = text.contains(",") ? "\"\(text)\"" : text
         
-        return "\(id),\(escapedText),\(importance.rawValue),\(deadlineString),\(isCompleted),\(createDate.description),\(changeDateString),\(colorString)"
+        return "\(id),\(escapedText),\(importance.rawValue),\(deadlineString),\(done),\(createdAt.description),\(changedAtString),\(colorString),\(filesString)"
     }
     
     static func fromCSV(_ csvString: String) -> TodoItem? {
@@ -48,25 +49,24 @@ extension TodoItem: FileCachePackage.CachableCsv {
         }
         
         components.append(currentComponent)
-                
+        
         guard components.count >= 8 else {
             return nil
         }
         
         guard let id = UUID(uuidString: components[0]) else { return nil }
         let text = components[1]
-        let importance = Priority(rawValue: components[2]) ?? .usual
-        let category = ItemCategory(rawValue: components[3]) ?? .standard(.other)
+        let importance = Priority(rawValue: components[2]) ?? .basic
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy'-'MM'-'dd' 'HH':'mm':'ss ZZZ"
+        let dateFormatter = ISO8601DateFormatter()
+
+        let deadline = components[3].isEmpty ? nil : dateFormatter.date(from: components[3])
+        let done = components[4] == "true"
+        guard let createdAt = dateFormatter.date(from: components[5]) else { return nil }
+        guard let changedAt = dateFormatter.date(from: components[6]) else { return nil }
+        let color = components[7].isEmpty ? "#FFFFFF" : components[7]
+        let files = components[8].isEmpty ? nil : components[8].split(separator: ";").map { String($0) }
         
-        let deadline = components[4].isEmpty ? nil : dateFormatter.date(from: components[3])
-        let isCompleted = components[5] == "true"
-        guard let createDate = dateFormatter.date(from: components[6]) else { return nil }
-        let changeDate = components.count > 7 ? dateFormatter.date(from: components[7]) : nil
-        let color = components.count > 8 ? components[8] : "#FFFFFF"
-        
-        return TodoItem(id: id, text: text, importance: importance, category: category, deadline: deadline, isCompleted: isCompleted, createDate: createDate, changeDate: changeDate, color: color)
+        return TodoItem(id: id, text: text, importance: importance, deadline: deadline, done: done, color: color, createdAt: createdAt, changedAt: changedAt, lastUpdatedBy: TodoItem.defaultLastUpdatedBy(), files: files)
     }
 }

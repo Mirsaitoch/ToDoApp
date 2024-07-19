@@ -19,11 +19,11 @@ extension DetailView {
             Picker("Важность", selection: $viewModel.importance) {
                 ForEach(Priority.allCases) { priority in
                     switch priority {
-                    case .unimportant:
+                    case .low:
                         Image(systemName: "arrow.down")
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.colorGray)
-                    case .usual:
+                    case .basic:
                         Text("нет")
                     case .important:
                         Image(systemName: "exclamationmark.2")
@@ -35,21 +35,6 @@ extension DetailView {
             .frame(width: 175)
             .pickerStyle(.segmented)
         }
-    }
-    
-    var categoriesPicker: some View {
-        Picker("Категория", selection: $viewModel.category) {
-            ForEach(viewModel.allCategories) { category in
-                HStack {
-                    Image(systemName: "circle.fill")
-                        .symbolRenderingMode(.palette)
-                        .foregroundColor(category.color)
-                    Text(category.name)
-                }
-                .tag(category)
-            }
-        }
-        .pickerStyle(.menu)
     }
     
     var deadlineToggle: some View {
@@ -83,7 +68,12 @@ extension DetailView {
     
     var deleteButton: some View {
         Button(role: .destructive) {
-            viewModel.delete()
+            Task {
+                do {
+                    try await viewModel.deleteItem()
+                }
+            }
+            completion(todo, true)
             dismiss()
         } label: {
             HStack {
@@ -93,6 +83,6 @@ extension DetailView {
             }
             .padding(.vertical, 8)
         }
-        .disabled(viewModel.item?.id == nil)
+        .disabled(isNewItem)
     }
 }

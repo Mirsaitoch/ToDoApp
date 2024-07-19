@@ -17,34 +17,43 @@ final class ViewBuilder: NSObject {
     private(set) var datesCollection: UICollectionView!
     private(set) var itemsTable: UITableView!
     
-//    private let dataQueue = DispatchQueue(label: "com.todoapp.dataQueue")
-    var selectedDateIndex: IndexPath?
+    var selectedDateIndex: IndexPath? = IndexPath(row: 0, section: 0)
+    
+    let toDoService: ToDoService
 
-    init(viewController: UIViewController) {
+    init(viewController: UIViewController, toDoService: ToDoService) {
         self.viewController = viewController
+        self.toDoService = toDoService
         self.view = viewController.view
         super.init()
-        self.manager.loadItem {
-            self.reloadData()
+        Task {
+            do {
+                try await self.manager.fetchTasks(toDoService: toDoService) {
+                    self.reloadData()
+                }
+            }
         }
     }
     
-    func updatePage() {
-        self.manager.loadItem {
-            self.reloadData()
+    func updatePage() async {
+        Task {
+            do {
+                try await self.manager.fetchTasks(toDoService: toDoService) {
+                    self.reloadData()
+                }
+            }
         }
     }
     
     func reloadData() {
-//        dataQueue.async {
-            self.uniqueDatesArray = self.manager.getSortedDates()
-
-            self.sections = self.manager.groupedSectionsByDate()
-            DispatchQueue.main.async {
-                self.datesCollection.reloadData()
-                self.itemsTable.reloadData()
-            }
-//        }
+        self.uniqueDatesArray = self.manager.getSortedDates()
+        
+        self.sections = self.manager.groupedSectionsByDate()
+        
+        DispatchQueue.main.async {
+            self.datesCollection.reloadData()
+            self.itemsTable.reloadData()
+        }
     }
 
     func getDatesSlider() {

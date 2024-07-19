@@ -13,26 +13,21 @@ extension TodoItem: FileCachePackage.CachableJson {
         var data: [String: Any] = [
             "id": id.uuidString,
             "text": text,
-            "isCompleted": isCompleted,
-            "createDate": createDate.timeIntervalSince1970
+            "done": done,
+            "createdAt": createdAt.timeIntervalSince1970,
+            "changedAt": changedAt.timeIntervalSince1970
         ]
         
-        if importance != .usual {
+        if importance != .basic {
             data["importance"] = importance.rawValue
         }
-        
-        if case let .standard(standardCategory) = category, standardCategory != .other {
-            data["category"] = standardCategory.rawValue
-        } else if case let .custom(customCategory) = category {
-            data["category"] = customCategory.id.uuidString
-        }
 
+        if let files = files {
+            data["files"] = files
+        }
+        
         if let deadline = deadline {
             data["deadline"] = deadline.timeIntervalSince1970
-        }
-        
-        if let changeDate = changeDate {
-            data["changeDate"] = changeDate.timeIntervalSince1970
         }
         
         if let color = color {
@@ -48,31 +43,28 @@ extension TodoItem: FileCachePackage.CachableJson {
               let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
               let id = (json["id"] as? String).flatMap({ UUID(uuidString: $0) }),
               let text = json["text"] as? String,
-              let isCompleted = json["isCompleted"] as? Bool,
-              let createDateInterval = json["createDate"] as? TimeInterval else {
+              let done = json["done"] as? Bool,
+              let createdAtInterval = json["createdAt"] as? TimeInterval,
+              let changeAtInterval = json["changedAt"] as? TimeInterval else {
             return nil
         }
         
-        let createDate = Date(timeIntervalSince1970: createDateInterval)
+        let createdAt = Date(timeIntervalSince1970: createdAtInterval)
         
+        let changedAt = Date(timeIntervalSince1970: changeAtInterval)
+
         let importanceRawValue = json["importance"] as? String
-        let importance = Priority(rawValue: importanceRawValue ?? "usual") ?? .usual
+        let importance = Priority(rawValue: importanceRawValue ?? "usual") ?? .basic
         
-        let categoryRawValue = json["category"] as? String
-        let category = ItemCategory(rawValue: categoryRawValue ?? "other") ?? .standard(.other)
+        let files = json["files"] as? [String]
         
         var deadline: Date?
         if let deadlineTimeInterval = json["deadline"] as? TimeInterval {
             deadline = Date(timeIntervalSince1970: deadlineTimeInterval)
         }
         
-        var changeDate: Date?
-        if let changeDateTimeInterval = json["changeDate"] as? TimeInterval {
-            changeDate = Date(timeIntervalSince1970: changeDateTimeInterval)
-        }
-        
         let color = json["color"] as? String ?? "#FFFFFF"
         
-        return TodoItem(id: id, text: text, importance: importance, category: category, deadline: deadline, isCompleted: isCompleted, createDate: createDate, changeDate: changeDate, color: color)
+        return TodoItem(id: id, text: text, importance: importance, deadline: deadline, done: done, color: color, createdAt: createdAt, changedAt: changedAt, lastUpdatedBy: TodoItem.defaultLastUpdatedBy(), files: files)
     }
 }

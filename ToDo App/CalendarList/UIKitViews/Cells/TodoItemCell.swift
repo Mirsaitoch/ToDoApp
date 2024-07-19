@@ -46,29 +46,29 @@ class TodoItemCell: UITableViewCell {
     
     func configure(with item: TodoItem) {
         
-        todoLabel.textColor = item.isCompleted ? .labelTertiary : .labelPrimary
+        todoLabel.textColor = item.done ? .labelTertiary : .labelPrimary
         let attributeString: NSMutableAttributedString = NSMutableAttributedString(string: item.text)
         
-        if item.isCompleted {
+        if item.done {
             attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSRange(location: 0, length: attributeString.length))
         }
         
         todoLabel.attributedText = attributeString
         
-        switch item.category {
-        case .standard(let standardCategory):
-            switch standardCategory {
-            case .work:
-                importanceIndicator.backgroundColor = .red
-            case .study:
-                importanceIndicator.backgroundColor = .blue
-            case .hobby:
-                importanceIndicator.backgroundColor = .green
-            case .other:
-                importanceIndicator.backgroundColor = .gray
-            }
-        case .custom(let customCategory):
-            importanceIndicator.backgroundColor = UIColor(customCategory.color)
-        }
+//        switch item.category {
+//        case .standard(let standardCategory):
+//            switch standardCategory {
+//            case .work:
+//                importanceIndicator.backgroundColor = .red
+//            case .study:
+//                importanceIndicator.backgroundColor = .blue
+//            case .hobby:
+//                importanceIndicator.backgroundColor = .green
+//            case .other:
+//                importanceIndicator.backgroundColor = .gray
+//            }
+//        case .custom(let customCategory):
+//            importanceIndicator.backgroundColor = UIColor(customCategory.color)
+//        }
     }
 }

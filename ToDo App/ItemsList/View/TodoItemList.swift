@@ -9,7 +9,12 @@ import SwiftUI
 import CocoaLumberjackSwift
 
 struct TodoItemList: View {
-    @StateObject var viewModel = ViewModel()
+    @FocusState private var isTextFieldFocused: Bool
+    @StateObject var viewModel = ViewModel(
+        toDoService: ToDoService(
+            networkingService: DefaultNetworkingService(token: Constants.token)
+        )
+    )
     
     var body: some View {
         NavigationStack {
@@ -17,16 +22,21 @@ struct TodoItemList: View {
                 VStack {
                     List {
                         Section(header: header) {
-                            ForEach(Array(viewModel.filteredItems), id: \.id) { item in
-                                ToDoItemCell(todoId: item.id) {
+                            ForEach(Array(viewModel.filtredItems), id: \.id) { item in
+                                ToDoItemCell(todoId: item.id, viewModel: viewModel) {
                                     viewModel.selectedItem = item
                                     viewModel.showDetailView.toggle()
                                 }
                                 .listRowBackground(Color.backSecondary)
                                 .swipeActions(edge: .leading) {
                                     Button {
-                                        viewModel.compliteItem(item: item)
-                                        
+                                        Task {
+                                            do {
+                                                try await viewModel.updateItem(id: item.id)
+                                            } catch {
+                                                DDLogError("Error when updating a task")
+                                            }
+                                        }
                                     } label: {
                                         Label("Check", systemImage: "checkmark.circle.fill")
                                     }
@@ -34,8 +44,13 @@ struct TodoItemList: View {
                                 }
                                 .swipeActions(edge: .trailing) {
                                     Button {
-                                        viewModel.deleteItem(id: item.id)
-                                        
+                                        Task {
+                                            do {
+                                                try await viewModel.deleteItem(id: item.id)
+                                            } catch {
+                                                DDLogError("Error deleting a task")
+                                            }
+                                        }
                                     } label: {
                                         Label("Trash", systemImage: "trash.fill")
                                     }
@@ -51,6 +66,7 @@ struct TodoItemList: View {
                                 }
                             }
                             newItemTextField
+                                .focused($isTextFieldFocused)
                         }
                         .textCase(nil)
                     }
@@ -63,8 +79,8 @@ struct TodoItemList: View {
             }
             .toolbar {
                 ToolbarItem {
-                    NavigationLink {
-                        CalendarView()
+                    Button {
+                        viewModel.showCalendarView.toggle()
                     } label: {
                         Image(systemName: "calendar")
                             .foregroundStyle(.labelPrimary)
@@ -74,9 +90,9 @@ struct TodoItemList: View {
                     NavigationLink {
                         AddCategoryView()
                     } label: {
-                        Image(systemName: "gear")
-                            .foregroundStyle(.labelPrimary)
-                    }
+                        Image(systemName: "gear.badge.xmark")
+                            .foregroundStyle(.labelTertiary)
+                    }.disabled(true)
                 }
             }
             .navigationTitle("Мои дела")
@@ -84,12 +100,35 @@ struct TodoItemList: View {
         .scrollIndicators(.hidden)
         .scrollContentBackground(.hidden)
         .background(Color.backPrimary)
-        .sheet(isPresented: $viewModel.showDetailView, onDismiss: viewModel.sheetDismiss) {
-            DetailView(itemID: viewModel.selectedItem?.id ?? UUID())
-        }
+        .sheet(isPresented: $viewModel.showDetailView, content: {
+            DetailView(todo: viewModel.selectedItem) { todoItem, isDeleted in
+                if isDeleted {
+                    withAnimation {
+                        viewModel.deleteTodo(id: todoItem.id)
+                    }
+                } else {
+                    withAnimation {
+                        viewModel.addTodo(todo: todoItem)
+                    }
+                }
+                viewModel.selectedItem = nil
+            }
+        })
+        .fullScreenCover(isPresented: $viewModel.showCalendarView, onDismiss: {
+            Task {
+                await viewModel.sheetDismiss()
+            }
+        }, content: {
+            CalendarView(isPresented: $viewModel.showCalendarView)
+        })
         .onAppear {
-            self.viewModel.setup()
-            viewModel.loadItems()
+            Task {
+                do {
+                    try await viewModel.fetchTasks()
+                } catch {
+                    DDLogError("Fetch error")
+                }
+            }
             DDLogInfo("TodoItemList has appeared")
         }
     }
@@ -102,7 +141,7 @@ struct TodoItemList: View {
             Spacer()
             
             Menu {
-                Button(action: viewModel.sortedByCreatingDate) {
+                Button(action: viewModel.sortByCreatingDate) {
                     HStack {
                         if viewModel.currentSortOption == .byDate {
                             Image(systemName: "checkmark")
@@ -110,7 +149,7 @@ struct TodoItemList: View {
                         Text("Сортировать по дате создания")
                     }
                 }
-                Button(action: viewModel.sortedByImportance) {
+                Button(action: viewModel.sortByImportance) {
                     HStack {
                         if viewModel.currentSortOption == .byImportance {
                             Image(systemName: "checkmark")
@@ -132,17 +171,29 @@ struct TodoItemList: View {
         }
     }
     
-    var newItemTextField: some View {
-        TextField("", text: $viewModel.newItemText, prompt: Text("Новое"))
+    private var newItemTextField: some View {
+            TextField(
+                "",
+                text: $viewModel.newItemText,
+                prompt: Text("Новое")
+            )
+            .focused($isTextFieldFocused)
+            .foregroundStyle(.labelPrimary)
             .onSubmit {
-                if viewModel.newItemText.trimming() == "" {
-                    viewModel.newItemText = ""
-                } else {
-                    viewModel.addItem(TodoItem(text: viewModel.newItemText.trimming()))
-                    viewModel.newItemText = ""
+                isTextFieldFocused = false
+                let text = viewModel.newItemText.trimming()
+                if text != "" {
+                    Task {
+                        do {
+                            try await viewModel.addItem(text: text)
+                        } catch {
+                            DDLogError("Error when adding a new task")
+                        }
+                    }
                 }
+                viewModel.newItemText = ""
             }
-    }
+        }
 }
 
 #Preview {
