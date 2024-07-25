@@ -181,7 +181,7 @@ struct TodoItemList: View {
             .foregroundStyle(.labelPrimary)
             .onSubmit {
                 isTextFieldFocused = false
-                let text = viewModel.newItemText.trimming()
+                let text = viewModel.newItemText.trimmed()
                 if text != "" {
                     Task {
                         do {

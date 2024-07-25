@@ -19,7 +19,7 @@ extension AddCategoryView {
             }
         }
         
-        var fileCache = FileCache.shared
+//        var fileCache = FileCache.shared
         
         @Published var text = ""
         @Published var showColorPicker = false

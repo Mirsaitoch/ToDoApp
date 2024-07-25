@@ -1,14 +1,15 @@
 //
-//  String+trimming.swift
+//  String+Trimming.swift
 //  ToDo App
 //
-//  Created by Мирсаит Сабирзянов on 08.07.2024.
+//  Created by Мирсаит Сабирзянов on 27.06.2024.
 //
 
 import Foundation
 
 extension String {
-    func trimming() -> String {
-        self.trimmingCharacters(in: .whitespacesAndNewlines)
+    func trimmed() -> String {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
+
