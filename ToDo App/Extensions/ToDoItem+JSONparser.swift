@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import FileCachePackage
 
-extension TodoItem: FileCachePackage.CachableJson {
+extension TodoItem {
     var json: Any {
         var data: [String: Any] = [
             "id": id.uuidString,
@@ -50,7 +49,6 @@ extension TodoItem: FileCachePackage.CachableJson {
         }
         
         let createdAt = Date(timeIntervalSince1970: createdAtInterval)
-        
         let changedAt = Date(timeIntervalSince1970: changeAtInterval)
 
         let importanceRawValue = json["importance"] as? String
@@ -58,13 +56,21 @@ extension TodoItem: FileCachePackage.CachableJson {
         
         let files = json["files"] as? [String]
         
-        var deadline: Date?
-        if let deadlineTimeInterval = json["deadline"] as? TimeInterval {
-            deadline = Date(timeIntervalSince1970: deadlineTimeInterval)
-        }
+        let deadline = (json["deadline"] as? TimeInterval).flatMap { Date(timeIntervalSince1970: $0) }
         
         let color = json["color"] as? String ?? "#FFFFFF"
         
-        return TodoItem(id: id, text: text, importance: importance, deadline: deadline, done: done, color: color, createdAt: createdAt, changedAt: changedAt, lastUpdatedBy: TodoItem.defaultLastUpdatedBy(), files: files)
+        return TodoItem(
+            id: id,
+            text: text,
+            importance: importance,
+            deadline: deadline,
+            done: done,
+            color: color,
+            createdAt: createdAt,
+            changedAt: changedAt,
+            lastUpdatedBy: TodoItem.defaultLastUpdatedBy(),
+            files: files
+        )
     }
 }

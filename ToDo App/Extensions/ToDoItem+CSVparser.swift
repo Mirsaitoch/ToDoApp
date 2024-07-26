@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import FileCachePackage
 
-extension TodoItem: FileCachePackage.CachableCsv {
+extension TodoItem {
     static func parse(csv: String) -> [TodoItem] {
         var toDoItems = [TodoItem]()
         let rows = csv.split(separator: "\n")

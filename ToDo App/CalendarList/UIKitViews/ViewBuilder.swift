@@ -5,7 +5,7 @@ final class ViewBuilder: NSObject {
     let manager = ViewManager.shared
 
     private let dateFormatter = DateConverter()
-    let fileCache = FileCache.shared
+//    let fileCache = FileCache.shared
     var viewController: UIViewController
     var view: UIView
 

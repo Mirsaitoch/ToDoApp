@@ -27,7 +27,7 @@ extension TodoItemList {
                 
         private let toDoService: ToDoService
         private var revisionValue = RevisionValue.shared
-        var fileCache = FileCache.shared
+//        var fileCache = FileCache.shared
         var completedCount = 0
         private var cancellables: Set<AnyCancellable> = []
         var showCompleted = true

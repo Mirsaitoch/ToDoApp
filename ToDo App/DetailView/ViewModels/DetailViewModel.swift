@@ -191,7 +191,7 @@ extension DetailView {
         func getUpdatedItem() -> TodoItem {
             let updatedItem = TodoItem(
                 id: todo.id,
-                text: self.text.trimming(),
+                text: self.text.trimmed(),
                 importance: self.importance,
                 deadline: self.isDeadline ? self.dateDeadline : nil,
                 done: self.done,

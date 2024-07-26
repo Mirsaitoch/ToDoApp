@@ -15,3 +15,4 @@ enum DefaultCategory: String, CaseIterable, Identifiable, Hashable {
     
     var id: Self { self }
 }
+

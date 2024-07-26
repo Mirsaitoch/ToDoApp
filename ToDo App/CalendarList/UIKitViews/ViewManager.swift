@@ -23,7 +23,7 @@ final class ViewManager {
     
     var items: [TodoItem] = []
     
-    var fileCache = FileCache.shared
+//    var fileCache = FileCache.shared
     
     func getCollection(id: String, dataSource: UICollectionViewDataSource, delegate: UICollectionViewDelegate) -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
